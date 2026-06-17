@@ -1,0 +1,90 @@
+{
+  "bookings": [
+    {
+      "id": "seed_aurelie",
+      "date": "2026-06-18",
+      "hour": 11,
+      "type": "consultation",
+      "paiement": "cb",
+      "statut": "paye",
+      "client": {
+        "nom": "Aurélie Bensimon",
+        "email": "a.bensimon@example.com",
+        "telephone": "06 71 24 88 03"
+      },
+      "montant": 120,
+      "source": "en_ligne",
+      "rappelEnvoye": false,
+      "createdAt": "2026-06-15T09:12:00.000Z"
+    },
+    {
+      "id": "seed_karim",
+      "date": "2026-06-18",
+      "hour": 15,
+      "type": "suivi_dossier",
+      "paiement": "aucun",
+      "statut": "confirme",
+      "client": {
+        "nom": "Karim Doucouré",
+        "email": "k.doucoure@example.com",
+        "telephone": "07 58 41 19 26"
+      },
+      "dossier": "Doucouré c/ Préfecture de la Seine-Saint-Denis",
+      "montant": 0,
+      "source": "en_ligne",
+      "rappelEnvoye": false,
+      "createdAt": "2026-06-16T14:40:00.000Z"
+    },
+    {
+      "id": "seed_especes",
+      "date": "2026-06-23",
+      "hour": 16,
+      "type": "consultation",
+      "paiement": "especes",
+      "statut": "a_payer_especes",
+      "client": {
+        "nom": "Mathéo Pereira",
+        "email": "m.pereira@example.com",
+        "telephone": "06 12 90 77 41"
+      },
+      "montant": 120,
+      "source": "telephone",
+      "rappelEnvoye": false,
+      "createdAt": "2026-06-16T17:05:00.000Z"
+    },
+    {
+      "id": "rdv_b0f3eb4b",
+      "date": "2026-06-22",
+      "hour": 16,
+      "type": "suivi_dossier",
+      "paiement": "aucun",
+      "statut": "confirme",
+      "client": {
+        "nom": "fe",
+        "email": "fef@d.com",
+        "telephone": "0781673452"
+      },
+      "dossier": "fefeef",
+      "montant": 0,
+      "source": "en_ligne",
+      "rappelEnvoye": false,
+      "createdAt": "2026-06-17T14:49:01.193Z"
+    }
+  ],
+  "blocages": [
+    {
+      "id": "seed_audience",
+      "date": "2026-06-19",
+      "hour": null,
+      "motif": "Audience — TGI de Bobigny",
+      "createdAt": "2026-06-15T08:00:00.000Z"
+    },
+    {
+      "id": "seed_indispo",
+      "date": "2026-06-22",
+      "hour": 10,
+      "motif": "Indisponible",
+      "createdAt": "2026-06-15T08:00:00.000Z"
+    }
+  ]
+}
