@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+.gitignore
+# Secrets — JAMAIS dans l'image (l'env est injecté au runtime via docker compose)
+.env
+.env*.local
+npm-debug.log*
+*.log
+Dockerfile
+.dockerignore
+README.md
+DEPLOY-OVH.md
+deploy
+ecosystem.config.cjs

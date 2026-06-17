@@ -1,0 +1,29 @@
+# App avocat dockerisée, branchée sur le réseau partagé avec Caddy.
+# Prérequis (une seule fois) :
+#   docker network create cabinet_net
+#   docker network connect cabinet_net eventpics-caddy   # nom de ton conteneur Caddy
+# Lancement / mise à jour :
+#   docker compose up -d --build
+#
+# Caddy joindra l'app via le nom de service : reverse_proxy cabinet-nganga:3000
+
+services:
+  cabinet:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: https://slidecraft.fr
+    image: cabinet-nganga
+    container_name: cabinet-nganga
+    restart: unless-stopped
+    # Charge les variables (MONGODB_URI, ADMIN_PASSWORD, …) au runtime.
+    env_file: .env.local
+    environment:
+      NODE_ENV: production
+      TZ: Europe/Paris
+    networks:
+      - cabinet_net
+
+networks:
+  cabinet_net:
+    external: true
