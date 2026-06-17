@@ -1,0 +1,106 @@
+# Caddyfile COMPLET du VPS (eventpics + slidecraft→avocat + get5stars).
+# À copier dans /home/debian/eventpics/deploy/Caddyfile via `sudo cp`.
+# Option B : slidecraft.fr + www → app avocat (cabinet-nganga).
+#            Looply reste sur get5stars.app + webhook.slidecraft.fr.
+
+{
+    email {$ACME_EMAIL}
+    # acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+}
+
+# ─── Main app (EventPics) ──────────────────────────────────────────────
+{$DOMAIN} {
+    encode zstd gzip
+
+    request_body {
+        max_size 100MB
+    }
+
+    @longRoutes path /api/gallery/*/zip
+    handle @longRoutes {
+        reverse_proxy app:3000 {
+            header_up Host {host}
+            transport http {
+                read_timeout 10m
+                write_timeout 10m
+            }
+        }
+    }
+
+    handle {
+        reverse_proxy app:3000 {
+            header_up Host {host}
+            transport http {
+                read_timeout 2m
+            }
+        }
+    }
+}
+
+# ─── www → apex (EventPics) ────────────────────────────────────────────
+www.{$DOMAIN} {
+    redir https://{$DOMAIN}{uri} permanent
+}
+
+# ─── MinIO public TLS endpoint (port 9001) ─────────────────────────────
+{$DOMAIN}:9001 {
+    encode zstd gzip
+
+    request_body {
+        max_size 100MB
+    }
+
+    reverse_proxy minio:9000 {
+        header_up Host {host}
+        transport http {
+            read_timeout 5m
+            write_timeout 5m
+        }
+    }
+}
+
+# ─── Cabinet NGANGA (avocat) / slidecraft.fr ───────────────────────────
+slidecraft.fr, www.slidecraft.fr {
+    encode zstd gzip
+
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+        -X-Powered-By
+    }
+
+    reverse_proxy cabinet-nganga:3000 {
+        header_up Host {host}
+    }
+}
+
+# ─── Looply / get5stars.app ────────────────────────────────────────────
+get5stars.app, www.get5stars.app {
+    encode zstd gzip
+
+    header {
+        Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+        X-Content-Type-Options nosniff
+        X-Frame-Options DENY
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+        -X-Powered-By
+    }
+
+    reverse_proxy get5stars-app:3000 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        transport http {
+            read_timeout 2m
+        }
+    }
+}
+
+# ─── Looply webhook Shopify (reste sur get5stars-app) ──────────────────
+webhook.slidecraft.fr {
+    encode gzip
+    reverse_proxy get5stars-app:3000
+}
