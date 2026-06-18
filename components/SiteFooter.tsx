@@ -14,8 +14,7 @@ export default function SiteFooter() {
             </span>
           </div>
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-ink-soft">
-            {CABINET.titre}. Défense et conseil pour les particuliers en Seine-Saint-Denis et en
-            Île-de-France.
+            {CABINET.titre}. Défense et conseil pour les particuliers et professionnels en France.
           </p>
         </div>
 
@@ -45,11 +44,6 @@ export default function SiteFooter() {
             <li>
               <Link href="/prendre-rdv" className="text-ink hover:text-accent">
                 Prendre rendez-vous
-              </Link>
-            </li>
-            <li>
-              <Link href="/blog" className="text-ink-soft hover:text-accent">
-                Journal
               </Link>
             </li>
             <li>

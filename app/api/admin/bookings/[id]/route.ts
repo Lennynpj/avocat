@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isAuthenticated } from "@/lib/auth";
 import { getStore } from "@/lib/store";
 import { getStripe, stripeEnabled } from "@/lib/stripe";
-import { notifyRefund } from "@/lib/notify";
+import { notifyRefund, notifyValidated, notifyDeclined } from "@/lib/notify";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +27,19 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       }
       const updated = await store.updateBooking(params.id, { statut: "rembourse" });
       if (updated) await notifyRefund(updated);
+      break;
+    }
+    case "validate": {
+      if (booking.statut !== "a_valider") break;
+      const statut = booking.type === "consultation" ? "a_payer_especes" : "confirme";
+      const updated = await store.updateBooking(params.id, { statut });
+      if (updated) await notifyValidated(updated);
+      break;
+    }
+    case "decline": {
+      if (booking.statut !== "a_valider") break;
+      const updated = await store.updateBooking(params.id, { statut: "annule" });
+      if (updated) await notifyDeclined(updated);
       break;
     }
     case "cancel":

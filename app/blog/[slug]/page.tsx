@@ -23,6 +23,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
     description: a.description,
     keywords: a.keywords,
     alternates: { canonical: `/blog/${a.slug}` },
+    robots: { index: false, follow: false },
     openGraph: {
       type: "article",
       title: a.title,

@@ -1,21 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import {
-  Scale,
-  ArrowRight,
-  ArrowLeft,
-  Check,
-  CreditCard,
-  Cash,
-  FileText,
-  Clock,
-  Lock,
-} from "@/components/Icons";
+import { Scale, ArrowRight, ArrowLeft, Check, FileText, Clock } from "@/components/Icons";
 
 type RdvType = "consultation" | "suivi_dossier";
-type Paiement = "cb" | "especes";
-type Step = "type" | "creneau" | "coords" | "paiement" | "recap";
+type Step = "type" | "creneau" | "coords" | "recap";
 
 interface DayAvailability {
   date: string;
@@ -54,7 +43,6 @@ export default function BookingFlow() {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
   const [dossier, setDossier] = useState("");
-  const [paiement, setPaiement] = useState<Paiement | null>(null);
 
   const [days, setDays] = useState<DayAvailability[] | null>(null);
   const [loadingAvail, setLoadingAvail] = useState(true);
@@ -88,13 +76,7 @@ export default function BookingFlow() {
     };
   }, []);
 
-  const order: Step[] = useMemo(
-    () =>
-      type === "suivi_dossier"
-        ? ["type", "creneau", "coords", "recap"]
-        : ["type", "creneau", "coords", "paiement", "recap"],
-    [type],
-  );
+  const order: Step[] = useMemo(() => ["type", "creneau", "coords", "recap"], []);
   const idx = order.indexOf(step);
   const progress = ((idx + 1) / order.length) * 100;
 
@@ -114,12 +96,10 @@ export default function BookingFlow() {
           isPhoneFR(tel) &&
           (type !== "suivi_dossier" || dossier.trim().length >= 2)
         );
-      case "paiement":
-        return paiement !== null;
       default:
         return true;
     }
-  }, [step, type, date, hour, nom, email, tel, dossier, paiement]);
+  }, [step, type, date, hour, nom, email, tel, dossier]);
 
   function goNext() {
     setTouched(false);
@@ -139,7 +119,6 @@ export default function BookingFlow() {
         type,
         date,
         hour,
-        paiement: type === "suivi_dossier" ? "aucun" : paiement,
         client: { nom: nom.trim(), email: email.trim(), telephone: tel.trim() },
         dossier: type === "suivi_dossier" ? dossier.trim() : undefined,
       };
@@ -184,7 +163,6 @@ export default function BookingFlow() {
           {step === "type" && "Quel type de rendez-vous ?"}
           {step === "creneau" && "Choisissez un créneau"}
           {step === "coords" && "Vos coordonnées"}
-          {step === "paiement" && "Mode de paiement"}
           {step === "recap" && "Récapitulatif"}
         </h1>
         <div className="mt-5 h-1 w-full overflow-hidden rounded-full bg-line">
@@ -211,8 +189,8 @@ export default function BookingFlow() {
             active={type === "consultation"}
             onClick={() => setType("consultation")}
             icon={<Scale className="h-5 w-5" />}
-            title="Première consultation"
-            desc="Rendez-vous d'une heure pour exposer votre situation et définir une stratégie."
+            title="Rendez-vous pour exposer votre situation"
+            desc="Une heure pour exposer votre situation et définir une stratégie. N'accepte pas l'aide juridictionnelle."
             tag={`${PRIX} € TTC`}
           />
           <ChoiceCard
@@ -351,37 +329,11 @@ export default function BookingFlow() {
         </div>
       )}
 
-      {/* ----- ÉTAPE PAIEMENT ----- */}
-      {step === "paiement" && (
-        <div className="grid gap-3">
-          <ChoiceCard
-            active={paiement === "cb"}
-            onClick={() => setPaiement("cb")}
-            icon={<CreditCard className="h-5 w-5" />}
-            title="Carte bancaire"
-            desc="Paiement immédiat et sécurisé. Votre créneau est réservé dès la validation."
-            tag={`${PRIX} € TTC`}
-          />
-          <ChoiceCard
-            active={paiement === "especes"}
-            onClick={() => setPaiement("especes")}
-            icon={<Cash className="h-5 w-5" />}
-            title="Espèces au cabinet"
-            desc="À régler le jour du rendez-vous. Confirmation envoyée par email et SMS."
-            tag={`${PRIX} €`}
-          />
-          <p className="mt-1 flex items-center gap-2 text-xs text-ink-soft">
-            <Lock className="h-3.5 w-3.5" /> Paiement par carte traité par Stripe. Aucune donnée bancaire ne transite
-            par le cabinet.
-          </p>
-        </div>
-      )}
-
       {/* ----- ÉTAPE RÉCAP ----- */}
       {step === "recap" && (
         <div className="overflow-hidden rounded-2xl border border-line bg-surface">
           <Row label="Type">
-            {type === "consultation" ? "Première consultation" : "Suivi de dossier"}
+            {type === "consultation" ? "Rendez-vous (exposé de situation)" : "Suivi de dossier"}
           </Row>
           <Row label="Date">{date ? fmtLong(date) : "—"}</Row>
           <Row label="Heure">{hour !== null ? slotLabel(hour) : "—"}</Row>
@@ -389,16 +341,19 @@ export default function BookingFlow() {
           <Row label="Email">{email}</Row>
           <Row label="Téléphone">{tel}</Row>
           {type === "suivi_dossier" && <Row label="Dossier">{dossier}</Row>}
-          {type === "consultation" && (
-            <Row label="Paiement">{paiement === "cb" ? "Carte bancaire" : "Espèces au cabinet"}</Row>
-          )}
           <div className="flex items-center justify-between bg-ink px-5 py-4 text-paper">
-            <span className="text-sm text-paper/70">Total</span>
+            <span className="text-sm text-paper/70">{montant === 0 ? "Suivi de dossier" : "À régler au cabinet"}</span>
             <span className="font-mono text-lg font-semibold">
               {montant === 0 ? "Sans frais" : `${montant} € TTC`}
             </span>
           </div>
         </div>
+      )}
+
+      {step === "recap" && (
+        <p className="mt-4 text-center text-sm text-ink-soft">
+          Votre demande sera confirmée par le cabinet — vous recevrez un email et un SMS.
+        </p>
       )}
 
       {submitError && (
@@ -444,14 +399,10 @@ export default function BookingFlow() {
               className="ml-auto inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-white transition-all hover:bg-[#243556] active:translate-y-px disabled:opacity-60 sm:flex-none"
             >
               {submitting ? (
-                "Traitement…"
-              ) : type === "consultation" && paiement === "cb" ? (
-                <>
-                  <Lock className="h-4 w-4" /> Payer {montant} €
-                </>
+                "Envoi…"
               ) : (
                 <>
-                  <Check className="h-4 w-4" /> Confirmer le rendez-vous
+                  <Check className="h-4 w-4" /> Demander le rendez-vous
                 </>
               )}
             </button>

@@ -17,7 +17,12 @@ import {
 
 /** Un RDV occupe-t-il réellement le créneau ? (les "en_attente" trop vieux le libèrent) */
 export function bookingOccupies(b: Booking): boolean {
-  if (b.statut === "paye" || b.statut === "a_payer_especes" || b.statut === "confirme") {
+  if (
+    b.statut === "a_valider" ||
+    b.statut === "paye" ||
+    b.statut === "a_payer_especes" ||
+    b.statut === "confirme"
+  ) {
     return true;
   }
   if (b.statut === "en_attente") {
@@ -91,6 +96,8 @@ export async function isSlotBookable(date: string, hour: number): Promise<boolea
 function stateOf(booking?: Booking): SlotState {
   if (!booking) return "libre";
   switch (booking.statut) {
+    case "a_valider":
+      return "a_valider";
     case "paye":
       return "paye";
     case "a_payer_especes":

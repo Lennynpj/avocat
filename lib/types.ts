@@ -7,10 +7,11 @@ export type BookingType = "consultation" | "suivi_dossier";
 export type PaiementMode = "cb" | "especes" | "aucun";
 
 export type BookingStatus =
-  | "en_attente" // CB : créneau réservé, paiement en cours
-  | "paye" // CB réglé (ou marqué payé par l'admin)
-  | "a_payer_especes" // espèces : à régler au cabinet
-  | "confirme" // suivi de dossier : sans paiement
+  | "a_valider" // demande prise en ligne, à confirmer par l'avocat
+  | "en_attente" // CB Stripe (inactif) : créneau réservé, paiement en cours
+  | "paye" // réglé (au cabinet, ou marqué réglé par l'admin)
+  | "a_payer_especes" // à régler au cabinet
+  | "confirme" // suivi de dossier : sans frais
   | "annule"
   | "rembourse";
 
@@ -60,7 +61,7 @@ export interface Slot {
 }
 
 // Vue admin d'un créneau
-export type SlotState = "libre" | "paye" | "especes" | "suivi" | "en_attente" | "bloque";
+export type SlotState = "libre" | "a_valider" | "paye" | "especes" | "suivi" | "en_attente" | "bloque";
 
 export interface AdminSlot {
   date: string;

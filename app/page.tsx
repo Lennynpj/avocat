@@ -5,7 +5,6 @@ import SiteFooter from "@/components/SiteFooter";
 import Reveal from "@/components/Reveal";
 import { ArrowRight, Phone, MapPin, Clock, Scale } from "@/components/Icons";
 import { CABINET, PRIX_CONSULTATION, HORAIRES_AFFICHAGE } from "@/lib/config";
-import { getAllArticles } from "@/lib/blog";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
@@ -21,7 +20,7 @@ const jsonLd = {
     "Avocat au Barreau de Bobigny. Droit pénal, droit des étrangers, droit de la famille et droit du travail à Clichy-sous-bois.",
   telephone: CABINET.telephoneE164,
   priceRange: "€€",
-  areaServed: ["Clichy-sous-bois", "Bobigny", "Seine-Saint-Denis", "Île-de-France"],
+  areaServed: ["France", "Clichy-sous-bois", "Bobigny", "Seine-Saint-Denis", "Île-de-France"],
   knowsAbout: CABINET.domaines.map((d) => d.titre),
   address: {
     "@type": "PostalAddress",
@@ -38,12 +37,14 @@ const jsonLd = {
 
 const STEPS = [
   { t: "Choisir un créneau", d: "Le jour et l'heure parmi les disponibilités réelles du cabinet." },
-  { t: "Régler la consultation", d: "Par carte bancaire ou en espèces. Le suivi de dossier est sans frais." },
-  { t: "Recevoir la confirmation", d: "Par email et SMS, avec un rappel la veille du rendez-vous." },
+  { t: "Le cabinet confirme", d: "Votre demande est validée par le cabinet ; vous recevez un email et un SMS." },
+  {
+    t: "Régler au cabinet",
+    d: `La consultation (${PRIX_CONSULTATION} € TTC) se règle sur place, le jour du rendez-vous.`,
+  },
 ];
 
 export default function HomePage() {
-  const latest = getAllArticles().slice(0, 3);
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -134,8 +135,8 @@ export default function HomePage() {
               dossier.&nbsp;»
             </p>
             <p className="mx-auto mt-7 max-w-xl leading-relaxed text-ink-soft">
-              Maître NGANGA, Docteur en droit, a prêté serment le 19&nbsp;avril 2000. Il intervient devant les
-              juridictions de Seine-Saint-Denis et d&apos;Île-de-France.
+              Maître NGANGA, Docteur en droit, a prêté serment le 19&nbsp;avril 2000. Il intervient devant
+              toutes les juridictions de France.
             </p>
           </Reveal>
         </section>
@@ -156,31 +157,8 @@ export default function HomePage() {
               ))}
             </div>
             <p className="mt-8 text-center text-sm text-ink-soft">
-              Carte bancaire ou espèces · suivi de dossier sans frais.
+              Réponse rapide du cabinet · consultation réglée sur place.
             </p>
-          </Reveal>
-        </section>
-
-        {/* ---------- IV · JOURNAL ---------- */}
-        <section className="border-t border-line bg-surface/40">
-          <Reveal className="mx-auto max-w-3xl px-5 py-20 sm:px-8">
-            <SectionHead index="IV" title="Journal" />
-            <div className="mx-auto mt-10 max-w-xl divide-y divide-line border-y border-line text-center">
-              {latest.map((a) => (
-                <Link key={a.slug} href={`/blog/${a.slug}`} className="group block py-6">
-                  <span className="text-[11px] uppercase tracking-wider text-accent">{a.category}</span>
-                  <h3 className="mt-1.5 font-display text-lg font-medium leading-snug text-ink transition-colors group-hover:text-accent">
-                    {a.title}
-                  </h3>
-                </Link>
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <Link href="/blog" className="group inline-flex items-center gap-1.5 text-sm font-medium text-accent">
-                Tous les articles
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-1" />
-              </Link>
-            </div>
           </Reveal>
         </section>
 

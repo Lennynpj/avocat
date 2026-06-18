@@ -40,7 +40,8 @@ const slotLabel = (h: number) => `${h}h – ${h + 1}h`;
 
 const META: Record<SlotState, { label: string; dot: string; soft: string }> = {
   libre: { label: "Libre", dot: "bg-[#c7c7cc]", soft: "text-ink-soft" },
-  paye: { label: "Payé", dot: "bg-emerald-500", soft: "text-emerald-700" },
+  a_valider: { label: "À valider", dot: "bg-orange-500", soft: "text-orange-700" },
+  paye: { label: "Réglé", dot: "bg-emerald-500", soft: "text-emerald-700" },
   especes: { label: "Espèces", dot: "bg-amber-500", soft: "text-amber-700" },
   suivi: { label: "Suivi", dot: "bg-sky-500", soft: "text-sky-700" },
   en_attente: { label: "En attente", dot: "bg-zinc-400", soft: "text-zinc-600" },
@@ -49,8 +50,9 @@ const META: Record<SlotState, { label: string; dot: string; soft: string }> = {
 
 function statusLabel(b: Booking): string {
   switch (b.statut) {
-    case "paye": return `Payé · ${b.montant} €`;
-    case "a_payer_especes": return "À payer en espèces";
+    case "a_valider": return "Demande à valider";
+    case "paye": return `Réglé · ${b.montant} €`;
+    case "a_payer_especes": return "À régler au cabinet";
     case "confirme": return "Suivi de dossier";
     case "en_attente": return "Paiement en attente";
     default: return b.statut;
@@ -70,11 +72,13 @@ export default function AdminCalendar({
   today,
   slots,
   dayBlocked,
+  pending,
 }: {
   date: string;
   today: string;
   slots: AdminSlot[];
   dayBlocked: boolean;
+  pending: Booking[];
 }) {
   const router = useRouter();
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -89,7 +93,11 @@ export default function AdminCalendar({
   const [fDossier, setFDossier] = useState("");
 
   const strip = Array.from({ length: 21 }, (_, i) => addDays(today, i));
-  const rdvCount = slots.filter((s) => s.booking && ["paye", "especes", "suivi", "en_attente"].includes(s.state)).length;
+  const rdvCount = slots.filter((s) => s.booking && ["a_valider", "paye", "especes", "suivi", "en_attente"].includes(s.state)).length;
+
+  function dateLabel(iso: string) {
+    return iso === today ? "aujourd'hui" : longDate(iso);
+  }
 
   function go(d: string) {
     setSheet(null);
@@ -175,6 +183,55 @@ export default function AdminCalendar({
           })}
         </div>
       </header>
+
+      {/* Demandes à valider */}
+      {pending.length > 0 && (
+        <div className="px-4 pt-4">
+          <div className="rounded-2xl border border-orange-300/70 bg-orange-50 p-4">
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-500 text-[11px] font-bold text-white">
+                {pending.length}
+              </span>
+              <h2 className="text-sm font-semibold text-orange-900">
+                Demande{pending.length > 1 ? "s" : ""} à valider
+              </h2>
+            </div>
+            <div className="mt-3 space-y-2.5">
+              {pending.map((b) => (
+                <div key={b.id} className="rounded-xl bg-white p-3.5 shadow-sm">
+                  <p className="truncate font-semibold">{b.client.nom}</p>
+                  <p className="mt-0.5 text-sm text-ink-soft">
+                    {dateLabel(b.date)} · {slotLabel(b.hour)}
+                  </p>
+                  <p className="mt-0.5 truncate text-xs text-ink-soft">
+                    {b.type === "consultation" ? "Rendez-vous (exposé de situation)" : "Suivi de dossier"}
+                    {b.dossier ? ` · ${b.dossier}` : ""} · {b.client.telephone}
+                  </p>
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      onClick={() => act(`/api/admin/bookings/${b.id}`, { action: "validate" }, "PATCH")}
+                      disabled={busy}
+                      className="flex-1 rounded-xl bg-emerald-600 py-2.5 text-sm font-medium text-white transition active:scale-95 disabled:opacity-50"
+                    >
+                      Confirmer
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Refuser la demande de ${b.client.nom} ?`))
+                          act(`/api/admin/bookings/${b.id}`, { action: "decline" }, "PATCH");
+                      }}
+                      disabled={busy}
+                      className="flex-1 rounded-xl bg-danger py-2.5 text-sm font-medium text-white transition active:scale-95 disabled:opacity-50"
+                    >
+                      Refuser
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Résumé + action journée */}
       <div className="flex items-center justify-between px-5 py-4">
@@ -303,7 +360,7 @@ export default function AdminCalendar({
                   )}
                   {fType === "consultation" && (
                     <label className="flex items-center justify-between rounded-xl bg-white px-4 py-3">
-                      <span className="text-sm">Déjà réglé (espèces)</span>
+                      <span className="text-sm">Déjà réglé au cabinet</span>
                       <input type="checkbox" checked={fPaye} onChange={(e) => setFPaye(e.target.checked)} className="h-5 w-5 accent-[#1B2A4A]" />
                     </label>
                   )}
@@ -424,14 +481,19 @@ function BookingSheet({
       </div>
 
       <div className="mt-4 space-y-2.5">
+        {booking.statut === "a_valider" && (
+          <>
+            <BigButton onClick={() => act(url, { action: "validate" }, "PATCH")} disabled={busy} icon={<Check className="h-5 w-5" />}>
+              Confirmer la demande
+            </BigButton>
+            <BigButton onClick={() => act(url, { action: "decline" }, "PATCH")} disabled={busy} icon={<X className="h-5 w-5" />} tone="danger">
+              Refuser la demande
+            </BigButton>
+          </>
+        )}
         {booking.statut === "a_payer_especes" && (
           <BigButton onClick={() => act(url, { action: "mark-paid" }, "PATCH")} disabled={busy} icon={<Check className="h-5 w-5" />}>
-            Marquer comme payé
-          </BigButton>
-        )}
-        {booking.statut === "paye" && (
-          <BigButton onClick={() => act(url, { action: "refund" }, "PATCH")} disabled={busy} icon={<Cash className="h-5 w-5" />} tone="danger">
-            Rembourser {booking.montant} €
+            Marquer réglé au cabinet
           </BigButton>
         )}
         <BigButton onClick={() => act(url, { action: "cancel" }, "PATCH")} disabled={busy} icon={<X className="h-5 w-5" />} tone="muted">

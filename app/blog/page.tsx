@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   description:
     "Articles et conseils en droit pénal, droit des étrangers, droit de la famille et droit du travail, par Maître Jean Vivien NGANGA, avocat à Bobigny.",
   alternates: { canonical: "/blog" },
+  robots: { index: false, follow: false },
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

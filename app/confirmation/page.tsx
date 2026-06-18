@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "Confirmation", robots: { index: fals
 export default async function ConfirmationPage({
   searchParams,
 }: {
-  searchParams: { id?: string; simule?: string };
+  searchParams: { id?: string };
 }) {
   const id = searchParams.id;
   const booking = id ? await getStore().getBooking(id) : null;
@@ -39,15 +39,12 @@ export default async function ConfirmationPage({
                 <Check className="h-8 w-8" />
               </div>
               <h1 className="mt-6 font-display text-3xl font-semibold tracking-tight">
-                {booking.statut === "en_attente"
-                  ? "Réservation enregistrée"
-                  : "Rendez-vous confirmé"}
+                {booking.statut === "a_valider" ? "Demande envoyée" : "Rendez-vous confirmé"}
               </h1>
               <p className="mt-3 max-w-sm text-ink-soft">
-                {booking.statut === "paye" && "Votre paiement a bien été reçu. Un email et un SMS de confirmation vous ont été envoyés."}
-                {booking.statut === "en_attente" && "Votre paiement est en cours de confirmation. Vous recevrez un email dès validation."}
-                {booking.statut === "a_payer_especes" && "Votre demande est enregistrée. Une confirmation vous a été envoyée par email et SMS."}
-                {booking.statut === "confirme" && "Votre rendez-vous de suivi est confirmé. Un email et un SMS vous ont été envoyés."}
+                {booking.statut === "a_valider"
+                  ? "Votre demande a bien été enregistrée. Le cabinet va la confirmer — vous recevrez un email et un SMS dès validation."
+                  : "Votre rendez-vous est confirmé. Un email et un SMS vous ont été envoyés."}
               </p>
             </div>
 
@@ -55,29 +52,23 @@ export default async function ConfirmationPage({
               <DetailRow label="Date">{formatDateLong(booking.date)}</DetailRow>
               <DetailRow label="Heure">{slotStart(booking.hour)}</DetailRow>
               <DetailRow label="Type">
-                {booking.type === "consultation" ? "Première consultation" : "Suivi de dossier"}
+                {booking.type === "consultation" ? "Rendez-vous (exposé de situation)" : "Suivi de dossier"}
               </DetailRow>
               {booking.dossier && <DetailRow label="Dossier">{booking.dossier}</DetailRow>}
               <DetailRow label="Au nom de">{booking.client.nom}</DetailRow>
 
-              {booking.paiement === "especes" && (
+              {booking.type === "consultation" && (
                 <div className="flex items-center gap-3 bg-accent/5 px-5 py-4">
                   <Cash className="h-5 w-5 text-accent" />
                   <div className="text-sm">
-                    <p className="font-semibold text-accent">À payer en espèces · {PRIX_CONSULTATION} €</p>
+                    <p className="font-semibold text-accent">Consultation · {PRIX_CONSULTATION} € TTC</p>
                     <p className="text-ink-soft">À régler au cabinet le jour du rendez-vous.</p>
                   </div>
                 </div>
               )}
-              {booking.statut === "paye" && (
-                <div className="flex items-center justify-between bg-ink px-5 py-4 text-paper">
-                  <span className="text-sm text-paper/70">Payé</span>
-                  <span className="font-mono font-semibold">{booking.montant} € TTC</span>
-                </div>
-              )}
               {booking.type === "suivi_dossier" && (
                 <div className="flex items-center gap-3 bg-surface px-5 py-4 text-sm text-ink-soft">
-                  <FileText className="h-5 w-5 text-ink" /> Aucun paiement requis pour ce rendez-vous.
+                  <FileText className="h-5 w-5 text-ink" /> Rendez-vous de suivi — sans frais.
                 </div>
               )}
             </div>
@@ -87,17 +78,18 @@ export default async function ConfirmationPage({
                 <Clock className="h-4 w-4 text-accent" /> La suite
               </h2>
               <ul className="mt-3 space-y-1.5 text-sm text-ink-soft">
-                <li>· Un rappel vous sera envoyé par email et SMS la veille du rendez-vous.</li>
+                {booking.statut === "a_valider" ? (
+                  <>
+                    <li>· Le cabinet confirme votre demande sous peu.</li>
+                    <li>· Vous recevrez un email et un SMS dès validation.</li>
+                  </>
+                ) : (
+                  <li>· Un rappel vous sera envoyé par email et SMS la veille du rendez-vous.</li>
+                )}
                 <li>· Cabinet : {CABINET.adresse}, {CABINET.codePostal} {CABINET.ville}.</li>
-                <li>· En cas d&apos;empêchement, appelez le {CABINET.telephone}.</li>
+                <li>· Pour toute question, appelez le {CABINET.telephone}.</li>
               </ul>
             </div>
-
-            {searchParams.simule === "1" && (
-              <p className="mt-5 rounded-xl border border-dashed border-line px-4 py-3 text-center text-xs text-ink-soft">
-                Mode local : paiement simulé (Stripe non configuré).
-              </p>
-            )}
 
             <div className="mt-8 text-center">
               <Link href="/" className="inline-flex items-center gap-2 text-sm text-accent hover:text-accent-strong">

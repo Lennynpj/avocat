@@ -25,3 +25,16 @@ export function isAuthenticated(): boolean {
   const token = cookies().get(ADMIN_COOKIE)?.value;
   return !!token && token === expectedToken();
 }
+
+// ---- Lien 1-clic « Confirmer / Refuser » envoyé à l'avocat par email (sans login) ----
+export function rdvActionToken(id: string, action: "oui" | "non"): string {
+  return createHmac("sha256", secret()).update(`rdv:${id}:${action}`).digest("hex");
+}
+
+export function verifyRdvActionToken(id: string, action: string, token: string): boolean {
+  if (action !== "oui" && action !== "non") return false;
+  const expected = rdvActionToken(id, action);
+  const a = Buffer.from(token);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}

@@ -8,7 +8,6 @@ import { Phone, ArrowRight, Scale } from "@/components/Icons";
 const NAV = [
   { label: "Domaines", href: "/#domaines" },
   { label: "Le cabinet", href: "/#cabinet" },
-  { label: "Journal", href: "/blog" },
   { label: "Informations", href: "/#infos" },
 ];
 
