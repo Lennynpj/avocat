@@ -91,7 +91,7 @@ export default function SiteHeader() {
             </a>
             <Link
               href="/prendre-rdv"
-              className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-accent py-1.5 pl-5 pr-1.5 text-sm font-medium text-white transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-accent-strong active:scale-[0.98]"
+              className="group flex items-center gap-2 whitespace-nowrap rounded-full bg-ink py-1.5 pl-5 pr-1.5 text-sm font-medium text-paper transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-[#243556] active:scale-[0.98]"
             >
               Rendez-vous
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] group-hover:translate-x-0.5">

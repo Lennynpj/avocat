@@ -13,8 +13,9 @@ export const CABINET = {
   pays: "France",
   telephone: "01 43 32 05 84",
   telephoneE164: "+33143320584",
-  // Email réservé aux notifications — JAMAIS affiché publiquement.
-  emailNotif: "ngangaj@wanadoo.fr",
+  // Email destinataire des notifications (RDV, remboursements…) — JAMAIS affiché publiquement.
+  // Tests : lenny30@outlook.fr par défaut. En prod : définir EMAIL_AVOCAT=ngangaj@wanadoo.fr
+  emailNotif: process.env.EMAIL_AVOCAT || "lenny30@outlook.fr",
   domaines: [
     {
       titre: "Droit pénal",

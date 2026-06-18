@@ -59,11 +59,11 @@ export default function AdminLogin() {
               />
             </div>
           </label>
-          {error && <p className="mt-3 text-sm text-accent">Mot de passe incorrect.</p>}
+          {error && <p className="mt-3 text-sm text-danger">Mot de passe incorrect.</p>}
           <button
             type="submit"
             disabled={loading || pw.length === 0}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-3.5 text-[15px] font-medium text-white transition-colors hover:bg-accent-strong disabled:opacity-50"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3.5 text-[15px] font-medium text-white transition-colors hover:bg-[#243556] disabled:opacity-50"
           >
             {loading ? "Connexion…" : "Se connecter"}
             {!loading && <ArrowRight className="h-4 w-4" />}

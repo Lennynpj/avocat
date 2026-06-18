@@ -14,8 +14,8 @@ import {
   Cash,
   CreditCard,
   FileText,
-  Scale,
 } from "@/components/Icons";
+import AdminTabs from "./AdminTabs";
 
 const WEEKDAYS_S = ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"];
 const WEEKDAYS_L = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
@@ -129,14 +129,11 @@ export default function AdminCalendar({
   }
 
   return (
-    <div className="mx-auto max-w-2xl pb-24">
+    <div className="mx-auto max-w-2xl pb-28">
       {/* Header */}
       <header className="sticky top-0 z-20 border-b border-black/5 bg-[#f2f2f7]/85 backdrop-blur-xl">
-        <div className="flex items-center justify-between px-5 pb-2 pt-4">
-          <div className="flex items-center gap-2">
-            <Scale className="h-5 w-5 text-accent" />
-            <span className="text-lg font-semibold tracking-tight">Agenda</span>
-          </div>
+        <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-4">
+          <span className="text-lg font-semibold tracking-tight">Agenda</span>
           <button onClick={logout} className="rounded-full bg-white px-3.5 py-1.5 text-sm text-ink shadow-sm active:scale-95">
             Déconnexion
           </button>
@@ -307,7 +304,7 @@ export default function AdminCalendar({
                   {fType === "consultation" && (
                     <label className="flex items-center justify-between rounded-xl bg-white px-4 py-3">
                       <span className="text-sm">Déjà réglé (espèces)</span>
-                      <input type="checkbox" checked={fPaye} onChange={(e) => setFPaye(e.target.checked)} className="h-5 w-5 accent-[#7e1621]" />
+                      <input type="checkbox" checked={fPaye} onChange={(e) => setFPaye(e.target.checked)} className="h-5 w-5 accent-[#1B2A4A]" />
                     </label>
                   )}
                   <div className="flex gap-2 pt-1">
@@ -326,7 +323,7 @@ export default function AdminCalendar({
                         })
                       }
                       disabled={busy || fNom.trim().length < 2}
-                      className="flex-[1.4] rounded-xl bg-accent py-3 text-sm font-medium text-white disabled:opacity-50"
+                      className="flex-[1.4] rounded-xl bg-ink py-3 text-sm font-medium text-white disabled:opacity-50"
                     >
                       Enregistrer
                     </button>
@@ -376,6 +373,8 @@ export default function AdminCalendar({
           </div>
         </div>
       )}
+
+      <AdminTabs active="agenda" />
     </div>
   );
 }
@@ -464,7 +463,7 @@ function BigButton({
     tone === "primary"
       ? "bg-ink text-white"
       : tone === "danger"
-        ? "bg-accent text-white"
+        ? "bg-danger text-white"
         : "bg-white text-ink";
   return (
     <button

@@ -252,7 +252,7 @@ export default function BookingFlow() {
                       }}
                       className={`flex min-w-[68px] flex-col items-center rounded-2xl border px-3 py-3 transition-all active:scale-[0.97] ${
                         on
-                          ? "border-accent bg-accent text-white"
+                          ? "border-ink bg-ink text-white"
                           : "border-line bg-surface text-ink hover:border-ink/30"
                       }`}
                     >
@@ -276,7 +276,7 @@ export default function BookingFlow() {
                           onClick={() => setHour(h)}
                           className={`flex items-center justify-center gap-1.5 rounded-xl border py-3.5 text-sm font-medium transition-all active:scale-[0.97] ${
                             on
-                              ? "border-accent bg-accent text-white"
+                              ? "border-ink bg-ink text-white"
                               : "border-line bg-surface text-ink hover:border-ink/30"
                           }`}
                         >
@@ -402,7 +402,7 @@ export default function BookingFlow() {
       )}
 
       {submitError && (
-        <p className="mt-4 rounded-xl border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-accent">
+        <p className="mt-4 rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-sm text-danger">
           {submitError}
         </p>
       )}
@@ -430,7 +430,7 @@ export default function BookingFlow() {
               }}
               className={`group ml-auto inline-flex flex-1 items-center justify-center gap-2 rounded-full px-6 py-3.5 text-[15px] font-medium transition-all active:translate-y-px sm:flex-none ${
                 canContinue
-                  ? "bg-accent text-white hover:bg-accent-strong"
+                  ? "bg-ink text-white hover:bg-[#243556]"
                   : "cursor-not-allowed bg-line text-ink-soft"
               }`}
             >
@@ -441,7 +441,7 @@ export default function BookingFlow() {
             <button
               onClick={submit}
               disabled={submitting}
-              className="ml-auto inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-[15px] font-medium text-white transition-all hover:bg-accent-strong active:translate-y-px disabled:opacity-60 sm:flex-none"
+              className="ml-auto inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-white transition-all hover:bg-[#243556] active:translate-y-px disabled:opacity-60 sm:flex-none"
             >
               {submitting ? (
                 "Traitement…"
@@ -508,7 +508,7 @@ function ChoiceCard({
     >
       <span
         className={`mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-          active ? "bg-accent text-white" : "bg-paper text-ink"
+          active ? "bg-ink text-white" : "bg-paper text-ink"
         }`}
       >
         {icon}
@@ -518,7 +518,7 @@ function ChoiceCard({
           <span className="font-display text-lg font-medium">{title}</span>
           <span
             className={`shrink-0 rounded-full px-2.5 py-1 font-mono text-xs ${
-              active ? "bg-accent text-white" : "bg-paper text-ink-soft"
+              active ? "bg-ink text-white" : "bg-paper text-ink-soft"
             }`}
           >
             {tag}
@@ -546,7 +546,7 @@ function Field({
       <span className="text-sm font-medium text-ink">{label}</span>
       {children}
       {error ? (
-        <span className="text-xs text-accent">{error}</span>
+        <span className="text-xs text-danger">{error}</span>
       ) : hint ? (
         <span className="text-xs text-ink-soft">{hint}</span>
       ) : null}

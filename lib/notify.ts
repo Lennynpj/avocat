@@ -11,10 +11,10 @@ function typeLabel(b: Booking): string {
   return b.type === "consultation" ? "Première consultation" : "Suivi de dossier";
 }
 function p(text: string): string {
-  return `<p style="margin:0 0 10px;color:#3d382f;line-height:1.55;">${text}</p>`;
+  return `<p style="margin:0 0 10px;color:#3d4252;line-height:1.55;">${text}</p>`;
 }
 function tag(text: string): string {
-  return `<div style="display:inline-block;margin:4px 0 14px;padding:8px 14px;border-radius:8px;background:#fbeceb;color:#7e1621;font-weight:700;font-size:14px;">${text}</div>`;
+  return `<div style="display:inline-block;margin:4px 0 14px;padding:8px 14px;border-radius:8px;background:#eef1f6;color:#243556;font-weight:700;font-size:14px;">${text}</div>`;
 }
 
 async function notifyAvocat(subject: string, bodyLines: string[]) {

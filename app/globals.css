@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 :root {
-  /* Public — éditorial sobre */
-  --paper: 245 242 236;
+  /* Bleu nuit & or — sobre, prestige */
+  --paper: 245 243 238;
   --surface: 255 255 255;
-  --ink: 22 19 15;
-  --ink-soft: 92 86 76;
-  --line: 222 215 203;
-  --accent: 126 22 33;
-  --accent-strong: 94 15 24;
+  --ink: 27 42 74;
+  --ink-soft: 90 99 119;
+  --line: 224 219 207;
+  --accent: 140 109 52;
+  --accent-strong: 110 85 38;
+  --danger: 158 42 46;
   /* Admin — iOS */
   --ios-bg: 242 242 247;
 }
@@ -32,13 +33,13 @@ body {
 }
 
 ::selection {
-  background: rgb(var(--accent));
-  color: #fff;
+  background: rgb(var(--ink));
+  color: rgb(var(--paper));
 }
 
 /* Focus visible accessible */
 :focus-visible {
-  outline: 2px solid rgb(var(--accent));
+  outline: 2px solid rgb(var(--ink));
   outline-offset: 2px;
 }
 

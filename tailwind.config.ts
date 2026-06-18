@@ -16,6 +16,7 @@ const config: Config = {
         line: "rgb(var(--line) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
         "accent-strong": "rgb(var(--accent-strong) / <alpha-value>)",
+        danger: "rgb(var(--danger) / <alpha-value>)",
         // Admin — iOS system grays
         ios: "rgb(var(--ios-bg) / <alpha-value>)",
       },

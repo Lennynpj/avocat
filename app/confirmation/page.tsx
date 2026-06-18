@@ -35,7 +35,7 @@ export default async function ConfirmationPage({
         ) : (
           <>
             <div className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-white">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-ink text-white">
                 <Check className="h-8 w-8" />
               </div>
               <h1 className="mt-6 font-display text-3xl font-semibold tracking-tight">
