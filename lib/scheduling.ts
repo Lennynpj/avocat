@@ -137,3 +137,25 @@ export async function isDayBlocked(date: string): Promise<boolean> {
   const blocages = await store.listBlocages(date, date);
   return blocages.some((b) => b.hour === null);
 }
+
+/** Repères du mois pour la vue calendrier : par jour, nb de RDV + présence d'une audience/blocage. */
+export async function getMonthMarks(
+  monthISO: string,
+): Promise<Record<string, { rdv: number; audience: boolean }>> {
+  const [y, m] = monthISO.split("-").map(Number);
+  const from = `${monthISO}-01`;
+  const lastDay = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  const to = `${monthISO}-${String(lastDay).padStart(2, "0")}`;
+
+  const store = getStore();
+  const [bookings, blocages] = await Promise.all([
+    store.listBookings(from, to),
+    store.listBlocages(from, to),
+  ]);
+
+  const marks: Record<string, { rdv: number; audience: boolean }> = {};
+  const at = (d: string) => (marks[d] ??= { rdv: 0, audience: false });
+  for (const b of bookings) if (bookingOccupies(b)) at(b.date).rdv += 1;
+  for (const bl of blocages) at(bl.date).audience = true;
+  return marks;
+}
