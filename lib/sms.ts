@@ -17,11 +17,11 @@ function toE164FR(num: string): string {
  * Env requis :
  *   BREVO_API_KEY = clé API v3 (Brevo → « SMTP & API » → onglet API Keys, préfixe « xkeysib- »)
  *   SMS_SENDER    = expéditeur affiché : max 11 caractères, lettres et chiffres UNIQUEMENT
- *                   (pas d'espace ni d'accent). Ex. « MeNGANGA » (Me = abréviation de Maître).
+ *                   (pas d'espace ni d'accent). Ex. « NGANGA ».
  */
 export async function sendSms({ to, text }: SmsInput) {
   const apiKey = process.env.BREVO_API_KEY;
-  const sender = (process.env.SMS_SENDER || "MeNGANGA").slice(0, 11);
+  const sender = (process.env.SMS_SENDER || "NGANGA").slice(0, 11);
   const e164 = toE164FR(to);
   const recipient = e164.replace(/^\+/, ""); // Brevo attend l'indicatif sans « + » (ex. 33612345678)
 
