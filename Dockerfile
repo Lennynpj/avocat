@@ -12,7 +12,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # NEXT_PUBLIC_* doit être présent AU BUILD (figé dans le bundle client).
-ARG NEXT_PUBLIC_SITE_URL=https://slidecraft.fr
+ARG NEXT_PUBLIC_SITE_URL=https://nganga-avocat.fr
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build

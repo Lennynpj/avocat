@@ -12,7 +12,7 @@ services:
     build:
       context: .
       args:
-        NEXT_PUBLIC_SITE_URL: https://slidecraft.fr
+        NEXT_PUBLIC_SITE_URL: https://nganga-avocat.fr
     image: cabinet-nganga
     container_name: cabinet-nganga
     restart: unless-stopped
