@@ -31,7 +31,7 @@ export async function sendSms({ to, text }: SmsInput) {
   }
 
   try {
-    const res = await fetch("https://api.brevo.com/v3/transactionalSMS/sms", {
+    const res = await fetch("https://api.brevo.com/v3/transactionalSMS/send", {
       method: "POST",
       headers: {
         "api-key": apiKey,
@@ -50,8 +50,8 @@ export async function sendSms({ to, text }: SmsInput) {
       console.error("[SMS erreur Brevo]", res.status, await res.text());
       return { error: `HTTP ${res.status}` };
     }
-    const data = (await res.json()) as { messageId?: number | string; reference?: string };
-    return { ok: true as const, id: String(data.messageId ?? data.reference ?? "") };
+    const data = (await res.json()) as { messageId?: number | string };
+    return { ok: true as const, id: String(data.messageId ?? "") };
   } catch (e) {
     console.error("[SMS exception]", e);
     return { error: e };
