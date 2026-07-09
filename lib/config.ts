@@ -15,8 +15,8 @@ export const CABINET = {
   telephoneE164: "+33143320584",
   // Mobile — réservé aux communications APRÈS réservation (confirmation, rappel J-1).
   // JAMAIS affiché sur le site public.
-  mobile: "07 81 63 43 02",
-  mobileE164: "+33781634302",
+  mobile: "06 80 58 59 50",
+  mobileE164: "+33680585950",
   // Email destinataire des notifications (RDV, remboursements…) — JAMAIS affiché publiquement.
   // Tests : lenny30@outlook.fr par défaut. En prod : définir EMAIL_AVOCAT=ngangaj@wanadoo.fr
   emailNotif: process.env.EMAIL_AVOCAT || "lenny30@outlook.fr",
