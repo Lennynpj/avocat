@@ -3,7 +3,7 @@ import { sendEmail, emailLayout } from "@/lib/email";
 import { sendSms } from "@/lib/sms";
 import { formatDateLong, slotStart } from "@/lib/dates";
 import { siteUrl } from "@/lib/stripe";
-import { rdvActionToken } from "@/lib/auth";
+import { rdvActionToken, rdvViewToken } from "@/lib/auth";
 import type { Booking } from "@/lib/types";
 
 function when(b: Booking): string {
@@ -70,7 +70,7 @@ export async function notifyRequestReceived(b: Booking): Promise<void> {
     }),
     sendSms({
       to: CABINET.mobileE164,
-      text: `Cabinet NGANGA : demande RDV ${b.client.nom} ${formatDateLong(b.date)} ${slotStart(b.hour)}. A valider (mail ou agenda).`,
+      text: `Cabinet NGANGA - demande a valider : ${b.client.nom}, ${formatDateLong(b.date)} ${slotStart(b.hour)}. Accepter/refuser : ${siteUrl()}/api/rdv/valider?id=${encodeURIComponent(b.id)}&t=${rdvViewToken(b.id)}`,
     }),
   ]);
 }

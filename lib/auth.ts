@@ -38,3 +38,15 @@ export function verifyRdvActionToken(id: string, action: string, token: string):
   const b = Buffer.from(expected);
   return a.length === b.length && timingSafeEqual(a, b);
 }
+
+// ---- Lien de consultation « Accepter / Refuser » envoyé à l'avocat par SMS ----
+export function rdvViewToken(id: string): string {
+  return createHmac("sha256", secret()).update(`rdv:${id}:view`).digest("hex");
+}
+
+export function verifyRdvViewToken(id: string, token: string): boolean {
+  const expected = rdvViewToken(id);
+  const a = Buffer.from(token);
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
