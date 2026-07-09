@@ -12,46 +12,46 @@ function toE164FR(num: string): string {
 }
 
 /**
- * SMS via Twilio (solde prépayé rechargeable).
- * Sans identifiants → simulation console (dev local, aucun envoi réel).
+ * SMS via Brevo (solde de crédits prépayé, rechargeable).
+ * Sans clé API → simulation console (dev local, aucun envoi réel).
  * Env requis :
- *   TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
- *   TWILIO_FROM = numéro « +33… », expéditeur alphanumérique « NGANGA »,
- *                 ou Messaging Service « MG… ».
+ *   BREVO_API_KEY = clé API v3 (Brevo → « SMTP & API » → onglet API Keys, préfixe « xkeysib- »)
+ *   SMS_SENDER    = expéditeur affiché, ex. « NGANGA » (max 11 caractères alphanumériques,
+ *                   à faire valider dans Brevo → Senders pour la France)
  */
 export async function sendSms({ to, text }: SmsInput) {
-  const sid = process.env.TWILIO_ACCOUNT_SID;
-  const token = process.env.TWILIO_AUTH_TOKEN;
-  const from = process.env.TWILIO_FROM;
-  const recipient = toE164FR(to);
+  const apiKey = process.env.BREVO_API_KEY;
+  const sender = (process.env.SMS_SENDER || "NGANGA").slice(0, 11);
+  const e164 = toE164FR(to);
+  const recipient = e164.replace(/^\+/, ""); // Brevo attend l'indicatif sans « + » (ex. 33612345678)
 
-  if (!sid || !token || !from) {
-    console.log(`\n[SMS simulé]  → ${recipient}\n  ${text}\n`);
+  if (!apiKey) {
+    console.log(`\n[SMS simulé]  → ${e164}\n  ${text}\n`);
     return { simulated: true as const };
   }
 
   try {
-    const params = new URLSearchParams();
-    params.set("To", recipient);
-    if (from.startsWith("MG")) params.set("MessagingServiceSid", from);
-    else params.set("From", from);
-    params.set("Body", text);
-
-    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    const res = await fetch("https://api.brevo.com/v3/transactionalSMS/sms", {
       method: "POST",
       headers: {
-        Authorization: "Basic " + Buffer.from(`${sid}:${token}`).toString("base64"),
-        "Content-Type": "application/x-www-form-urlencoded",
+        "api-key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-      body: params.toString(),
+      body: JSON.stringify({
+        sender,
+        recipient,
+        content: text,
+        type: "transactional",
+      }),
     });
 
     if (!res.ok) {
-      console.error("[SMS erreur Twilio]", res.status, await res.text());
+      console.error("[SMS erreur Brevo]", res.status, await res.text());
       return { error: `HTTP ${res.status}` };
     }
-    const data = (await res.json()) as { sid?: string };
-    return { ok: true as const, id: data.sid };
+    const data = (await res.json()) as { messageId?: number | string; reference?: string };
+    return { ok: true as const, id: String(data.messageId ?? data.reference ?? "") };
   } catch (e) {
     console.error("[SMS exception]", e);
     return { error: e };

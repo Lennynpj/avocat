@@ -27,7 +27,7 @@ Ouvrir http://localhost:3000
   et changer une seule ligne dans `lib/store/index.ts` — rien d'autre à toucher.
 - **Créneaux** : Lun–Ven, 1h (10·11·12·13·15·16·17h), délai mini 2h. Réglages dans `lib/config.ts`.
 - **Paiement** : Stripe Checkout (consultation 120 € TTC). Espèces et suivi de dossier = sans paiement en ligne.
-- **Notifications** : email via Resend, SMS via smsmode. Rappel 24h via Vercel Cron (`vercel.json`).
+- **Notifications** : email via Resend, SMS via Brevo. Rappel 24h via Vercel Cron (`vercel.json`).
 
 ## Activer les services réels (Phase 1)
 
@@ -37,7 +37,7 @@ Renseigner dans `.env.local` (voir `.env.example`) :
 |--------|-----------|-------------|
 | Stripe | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | paiement CB simulé |
 | Email (Resend) | `RESEND_API_KEY`, `EMAIL_FROM` | emails loggés en console |
-| SMS (smsmode) | `SMSMODE_API_KEY`, `SMS_SENDER` | SMS loggés en console |
+| SMS (Brevo) | `BREVO_API_KEY`, `SMS_SENDER` | SMS loggés en console |
 | Rappels | `CRON_SECRET` | endpoint non protégé |
 
 ### Webhook Stripe en local
@@ -62,5 +62,5 @@ Copier le `whsec_...` affiché dans `STRIPE_WEBHOOK_SECRET`.
 
 - Mentions légales / CGV : compléter les `[À compléter]` (SIREN, TVA, médiateur de la consommation).
 - Remplacer le `JsonFileStore` par une vraie base (Phase 1).
-- Brancher Stripe (live), Resend (domaine vérifié) et smsmode.
+- Brancher Resend (domaine vérifié) et Brevo (crédits SMS).
 - Authentification admin renforcée (le POC utilise un simple mot de passe).
