@@ -44,6 +44,12 @@ export const metadata: Metadata = {
       "Droit pénal, droit des étrangers, droit de la famille et droit du travail à Clichy-sous-bois (93). Rendez-vous en ligne.",
     siteName: "Cabinet NGANGA",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Maître Jean Vivien NGANGA — Avocat au Barreau de Bobigny",
+    description:
+      "Droit pénal, droit des étrangers, droit de la famille et droit du travail à Clichy-sous-bois (93). Rendez-vous en ligne.",
+  },
   robots: { index: true, follow: true },
 };
 

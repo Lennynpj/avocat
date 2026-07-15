@@ -8,6 +8,8 @@ import { CABINET, PRIX_CONSULTATION, HORAIRES_AFFICHAGE } from "@/lib/config";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 
+const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   `${CABINET.adresse}, ${CABINET.codePostal} ${CABINET.ville}`,
 )}`;
@@ -15,13 +17,18 @@ const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Attorney",
+  "@id": `${base}/#cabinet`,
   name: CABINET.avocat,
+  url: base,
+  image: `${base}/opengraph-image`,
   description:
     "Avocat au Barreau de Bobigny. Droit pénal, droit des étrangers, droit de la famille et droit du travail à Clichy-sous-bois.",
   telephone: CABINET.telephoneE164,
   priceRange: "€€",
   areaServed: ["France", "Clichy-sous-bois", "Bobigny", "Seine-Saint-Denis", "Île-de-France"],
   knowsAbout: CABINET.domaines.map((d) => d.titre),
+  availableLanguage: "French",
+  memberOf: { "@type": "Organization", name: "Barreau de Bobigny" },
   address: {
     "@type": "PostalAddress",
     streetAddress: CABINET.adresse,
@@ -29,6 +36,7 @@ const jsonLd = {
     postalCode: CABINET.codePostal,
     addressCountry: "FR",
   },
+  hasMap: mapsUrl,
   openingHoursSpecification: [
     { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "10:00", closes: "14:00" },
     { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], opens: "15:00", closes: "18:00" },

@@ -6,7 +6,7 @@ import BookingFlow from "@/components/booking/BookingFlow";
 export const metadata: Metadata = {
   title: "Prendre rendez-vous",
   description:
-    "Réservez votre consultation avec Maître Jean Vivien NGANGA. Paiement par carte ou en espèces, suivi de dossier sans frais.",
+    "Demandez un rendez-vous avec Maître Jean Vivien NGANGA, avocat à Clichy-sous-bois (93). Consultation 120 € TTC réglée au cabinet, demande confirmée par le cabinet.",
   alternates: { canonical: "/prendre-rdv" },
 };
 
